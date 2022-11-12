@@ -1,15 +1,25 @@
-# Disaster Response Pipeline Project
+<h3 align="center">Disaster Response Pipeline Project</h3>
 
-### Instructions:
-1. Run the following commands in the project's root directory to set up your database and model.
+## Instructions:
+1. Run the following commands in the project's root directory or open start.bat to build db, model and build a web of this project
+start.bat
 
-    - To run ETL pipeline that cleans data and stores in database
-        `python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse.db`
-    - To run ML pipeline that trains classifier and saves
-        `python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl`
+2. Web link : 127.0.0.1:3000
 
-2. Go to `app` directory: `cd app`
+3. input your text and click to Classify Message
 
-3. Run your web app: `python run.py`
+## File Descriptions
+**Data**
+    - To load, clean and store data to DR.db file : process_data.py;
+    - data file : disaster_categories.csv,  disaster_messages.csv.
 
-4. Click the `PREVIEW` button to open the homepage
+**Models** 
+    - To build model: train_classifier.py
+
+**App**
+    - templates folder : web tempplate (go.html, master.html);
+    - to run the web : run.py
+
+## Licensing, Authors
+- This project is public that can be used by any one have the <a href="https://github.com/SandHome/Disaster_Response_Pipeline">LINK</a> of this project
+- Authors : Vũ. Phạm Thế (MR)
