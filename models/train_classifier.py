@@ -17,20 +17,23 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 
 import pickle
+import re
 
 def load_data(database_filepath):
     # Get data from db file
     database = sqlalchemy.create_engine('sqlite:///'+ str(database_filepath))
     df = pd.read_sql_table('disastermsg', database)
+    
     X = df.message
-    Y = df.drop(columns = ["id","message", "genre", "original"])
+    # Get classification results on the other 36 categories
+    Y = df.drop(["id","message", "genre", "original"], axis=1)
     category_names = Y.columns.values
     return X, Y, category_names
 
 
 def tokenize(text):
-    # Write a tokenization function to process your text data
-    tokens = word_tokenize(text)
+    # just kep char and number symbol
+    tokens = word_tokenize(re.sub("^a-zA-Z0-9"," ", text))
     lemmatizer = WordNetLemmatizer()
 
     clean_tokens = []
@@ -42,15 +45,21 @@ def tokenize(text):
 
 
 def build_model():
-    # Build a machine learning pipeline
+    # Build a machine learning pipeline. This machine pipeline should take in the message column as input and output classification results on the other 36 categories
     output = Pipeline([('vect', CountVectorizer(tokenizer=tokenize)),('tfidf', TfidfTransformer()),('clf', MultiOutputClassifier(RandomForestClassifier()))])
     return output
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
     Y_pre = model.predict(X_test)
+    # Classification Report in sklearn 
+    # 1. Precision: Percentage of correct positive predictions relative to total positive predictions.
+    # 2. Recall: Percentage of correct positive predictions relative to total actual positives.
+    # 3. F1 Score: A weighted harmonic mean of precision and recall. The closer to 1, the better the model.
+    # F1 Score: 2 * (Precision * Recall) / (Precision + Recall)
     for ind,col in enumerate(category_names):
         print(col, classification_report(Y_test.values[:,ind],Y_pre[:,ind]))
+        
 
 
 def save_model(model, model_filepath):

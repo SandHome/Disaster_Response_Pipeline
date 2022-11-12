@@ -16,20 +16,27 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(df):
-    #  get detail data
+    #  Split categories into separate category columns
     cg = df.categories.str.split(";",expand=True)
-    r = cg.loc[0,:]
-    cg.columns = r.apply(lambda x: x[:-2]).values
     
-    # Change data value
+    # Get columns name after split categories into separate category columns
+    r = cg.loc[0,:].apply(lambda x: x[:-2]).values
+    
+    # Add columns name to dataframe
+    cg.columns = r
+        
+    # Get 0 or 1 value from text value
     for col in cg:
-        cg[col] = cg[col].str[-1]
-        cg[col] = cg[col].astype(int)
+        cg[col] = cg[col].str[-1].astype(int)
     cg["related"] = cg["related"].apply(lambda x: 0 if x ==0 else 1)
     
-    # clean data
+    # Remove categories columns
     df = df.drop(columns = ["categories"])
+    
+    # Add data detail of categories to df
     df = pd.concat([df, cg], axis= 1,sort=False)
+    
+    # Remove duplicates and keep last occurrences of message columns
     df = df.drop_duplicates(subset=['message'], keep='last')
     return df
 
