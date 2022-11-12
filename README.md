@@ -9,14 +9,14 @@ start.bat
 3. input your text and click to Classify Message
 
 ## File Descriptions
-**Data**
+1. Data
     - To load, clean and store data to DR.db file : process_data.py;
     - data file : disaster_categories.csv,  disaster_messages.csv.
 
-**Models** 
+2. Models
     - To build model: train_classifier.py
 
-**App**
+3. App
     - templates folder : web tempplate (go.html, master.html);
     - to run the web : run.py
 
