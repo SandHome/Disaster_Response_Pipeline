@@ -32,7 +32,7 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
-    # just kep char and number symbol
+    # just keep letters and numbers
     tokens = word_tokenize(re.sub("^a-zA-Z0-9"," ", text))
     lemmatizer = WordNetLemmatizer()
 
