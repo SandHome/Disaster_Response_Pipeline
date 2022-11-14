@@ -3,7 +3,7 @@
 
 ## Instructions:
 1. Run the following commands in the project's root directory or open start.bat to build db, model and build a web of this project
-start.bat
+( start.bat )
 
 2. Web link : 127.0.0.1:3000
 
