@@ -1,4 +1,5 @@
 <h3 align="center">Disaster Response Pipeline Project</h3>
+ With this project, we know how to analyze the disaster response data and build a demo system that can classifies disaster messages. This project include a database that it store real messages about disaster events, a meachine learning pipeline to classifies disaster messages and a wed app that use to check, classifies disaster messages.
 
 ## Instructions:
 1. Run the following commands in the project's root directory or open start.bat to build db, model and build a web of this project
@@ -7,6 +8,7 @@ start.bat
 2. Web link : 127.0.0.1:3000
 
 3. input your text and click to Classify Message
+try with (we are more than 50 people sleeping on the street. please help us find tent, food.)
 
 ## File Descriptions
 1. Data

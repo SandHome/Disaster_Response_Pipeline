@@ -4,6 +4,17 @@ import sqlalchemy
 
 
 def load_data(messages_filepath, categories_filepath):
+    '''
+    load_data
+    load data from 02 csv files then merge them to a single pandas dataframe
+    
+    Input:
+    messages_filepath filepath to messages csv file
+    categories_filepath filepath to categories csv file
+    
+    Return:
+    output a dataframe merging categories and messages
+    '''
     # Get msg from csv file
     msg = pd.read_csv(messages_filepath)
     
@@ -16,6 +27,16 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(df):
+    '''
+    clean_data
+    Get dataframe merging categories and messages then clean categories and messages data then return to a dataframe after clean.
+    
+    Input:
+    dataframe merging categories and messages
+    
+    Return:
+    output a dataframe after clean from categories and messages data
+    '''
     #  Split categories into separate category columns
     cg = df.categories.str.split(";",expand=True)
     
@@ -42,6 +63,17 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
+    '''
+    save_data
+    Get dataframe after clean the store to db file
+    
+    Input:
+    df is dataframe after clean
+    database_filename is db name
+    
+    Output
+    db file
+    '''
     database = sqlalchemy.create_engine('sqlite:///'+ str(database_filename))
     df.to_sql("disastermsg", database, index=False,if_exists='replace')
 

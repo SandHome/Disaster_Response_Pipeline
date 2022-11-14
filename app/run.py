@@ -2,6 +2,7 @@ import json
 import plotly
 import pandas as pd
 
+import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
@@ -11,16 +12,47 @@ from plotly.graph_objs import Bar
 # from sklearn.externals import joblib
 import joblib
 from sqlalchemy import create_engine
+from sklearn.base import BaseEstimator, TransformerMixin
+import re
 
+class StartingVerbExtractor(BaseEstimator, TransformerMixin):
+    
+    def starting_verb(self, text):
+        sentence_list = nltk.sent_tokenize(text)
+        for sentence in sentence_list:
+            pos_tags = nltk.pos_tag(tokenize(sentence))
+            first_word, first_tag = pos_tags[0]
+            if first_tag in ['VB', 'VBP'] or first_word == 'RT':
+                return True
+        return False
+
+    def fit(self, x, y=None):
+        return self
+
+    def transform(self, X):
+        X_tagged = pd.Series(X).apply(self.starting_verb)
+        return pd.DataFrame(X_tagged)
 
 app = Flask(__name__)
 
 def tokenize(text):
-    tokens = word_tokenize(text)
+    '''
+    tokenize
+    tokenize the text data
+    
+    Input:
+    text the text data need to tokenize
+    
+    Return:
+    clean_tokens is tokenize results after remove other symbols not is leter and numbers then lemmatize, normalize case, and remove leading/trailing white space
+    '''
+    # just keep letters and numbers
+    tokens = word_tokenize(re.sub("^a-zA-Z0-9"," ", text))
     lemmatizer = WordNetLemmatizer()
 
     clean_tokens = []
     for tok in tokens:
+        # lemmatize, normalize case, and remove leading/trailing white space
         clean_tok = lemmatizer.lemmatize(tok).lower().strip()
         clean_tokens.append(clean_tok)
 
@@ -44,6 +76,16 @@ def index():
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
+    # Category count
+    data = df.drop(columns = ["id","message", "genre", "original"])
+    countdata = []
+    
+    for name in data.columns.values:
+        countdata.append([name,len(df[df[name]==1])])
+    
+    Response_counts = (pd.DataFrame(data = countdata, columns = ['Categories', 'Counts']).nlargest(10, 'Counts').groupby('Categories').sum()['Counts'])
+    Response_names = list(Response_counts.index)
+    
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
@@ -62,6 +104,24 @@ def index():
                 },
                 'xaxis': {
                     'title': "Genre"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=Response_names,
+                    y=Response_counts
+                )
+            ],
+
+            'layout': {
+                'title': 'Top 10 Responses',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Response"
                 }
             }
         }
